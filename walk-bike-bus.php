@@ -13,13 +13,17 @@
  * License: GPL2
  */
 
-require_once( plugin_dir_path( __FILE__ ) . 'classes/Controller.php' );
-require_once( plugin_dir_path( __FILE__ ) . 'classes/User.php' );
-require_once( plugin_dir_path( __FILE__ ) . 'classes/Commute.php' );
+require_once( 'classes/Controller.php' );
+require_once( 'classes/User.php' );
+require_once( 'classes/Commute.php' );
 
-add_action( 'init', array( '\WalkBikeBus\Controller', 'init' ) );
+$wbb = new \WalkBikeBus\Controller;
+
+add_action( 'init', array( $wbb, 'init' ) );
 
 if ( is_admin() )
 {
-	add_action( 'init', array( '\WalkBikeBus\Controller', 'admin_init' ) );
+	add_action( 'admin_init', array( $wbb, 'admin_init' ) );
+	add_action( 'admin_init', array( $wbb, 'register_settings' ) );
+	add_action( 'admin_menu', array( $wbb, 'add_menus') );
 }

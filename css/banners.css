@@ -1,0 +1,33 @@
+.wbb-banner {
+    width: 223px;
+    height: 583px;
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+}
+
+.wbb-banner-left {
+    background: url(../images/meet-partners.png) no-repeat;
+}
+
+.wbb-banner-right {
+    background: url(../images/check-eligibility.png) no-repeat;
+}
+
+.wbb-banner-right input {
+    border: 0 !important;
+    padding: 0 5px !important;
+    margin: 0 10px !important;
+    position: absolute;
+    top: 100px;
+    width: 203px !important;
+    height: 30px !important;
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 1500px) {
+
+    .wbb-banner {
+        display: none;
+    }
+}
