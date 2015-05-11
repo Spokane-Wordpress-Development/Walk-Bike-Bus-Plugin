@@ -23,6 +23,7 @@ add_action( 'init', array( $wbb, 'init' ) );
 
 if ( is_admin() )
 {
+	add_action( 'init', array( $wbb, 'create_post_types' ) );
 	add_action( 'admin_init', array( $wbb, 'admin_init' ) );
 	add_action( 'admin_init', array( $wbb, 'register_settings' ) );
 	add_action( 'admin_menu', array( $wbb, 'add_menus') );
