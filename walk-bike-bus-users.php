@@ -38,6 +38,12 @@ $users = get_users(array(
 
 	<h2>Walk Bike Bus Users</h2>
 
+	<div class="admin notice">
+		<p>
+			If you do not see someone in this list, <a href="/wp-admin/users.php">click here</a> to find that person and then assign a neighborhood on the edit screen.
+		</p>
+	</div>
+
 	<table class="wp-list-table widefat fixed striped users">
 		<thead>
 		<tr>
