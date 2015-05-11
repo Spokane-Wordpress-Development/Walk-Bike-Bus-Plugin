@@ -15,9 +15,11 @@
 
 require_once( 'classes/Controller.php' );
 require_once( 'classes/User.php' );
+require_once( 'classes/Neighborhood.php' );
 require_once( 'classes/Commute.php' );
 
 $wbb = new \WalkBikeBus\Controller;
+$wbb_user = new \WalkBikeBus\User;
 
 add_action( 'init', array( $wbb, 'init' ) );
 
@@ -27,4 +29,12 @@ if ( is_admin() )
 	add_action( 'admin_init', array( $wbb, 'admin_init' ) );
 	add_action( 'admin_init', array( $wbb, 'register_settings' ) );
 	add_action( 'admin_menu', array( $wbb, 'add_menus') );
+
+	/**
+	 * Custom user meta
+	 */
+	add_action( 'show_user_profile', array( $wbb_user, 'extra_profile_fields' ) );
+	add_action( 'edit_user_profile', array( $wbb_user, 'extra_profile_fields' ) );
+	add_action( 'personal_options_update', array( $wbb_user, 'save_extra_profile_fields' ) );
+	add_action( 'edit_user_profile_update', array( $wbb_user, 'save_extra_profile_fields' ) );
 }
