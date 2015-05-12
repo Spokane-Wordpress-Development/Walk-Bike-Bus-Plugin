@@ -1,17 +1,17 @@
 .wbb-banner {
     width: 223px;
-    height: 583px;
+    height: 610px;
     position: absolute;
     top: 0;
     z-index: 1000;
 }
 
 .wbb-banner-left {
-    background: url(../images/meet-partners.png) no-repeat;
+    background: url(../images/meet-partners.png?v=2) no-repeat;
 }
 
 .wbb-banner-right {
-    background: url(../images/check-eligibility.png) no-repeat;
+    background: url(../images/check-eligibility.png?v=2) no-repeat;
 }
 
 .wbb-banner-right input {
@@ -22,7 +22,7 @@
     top: 100px;
     width: 203px !important;
     height: 30px !important;
-    border-radius: 5px;
+    border-radius: 5px !important;
 }
 
 @media screen and (max-width: 1500px) {
