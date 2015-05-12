@@ -1,4 +1,4 @@
-.wbb-banner {
+.wbb-banner-vertical {
     width: 223px;
     height: 610px;
     position: absolute;
@@ -14,7 +14,7 @@
     background: url(../images/check-eligibility.png?v=2) no-repeat;
 }
 
-.wbb-banner-right input {
+.wbb-banner-vertical input {
     border: 0 !important;
     padding: 0 5px !important;
     margin: 0 10px !important;
@@ -25,9 +25,60 @@
     border-radius: 5px !important;
 }
 
-@media screen and (max-width: 1500px) {
+.wbb-banner-horizontal {
+    display: none;
+    padding: 0 25%;
+    text-align: center;
+}
 
-    .wbb-banner {
+.wbb-banner-horizontal p {
+    text-align: center;
+    text-transform: uppercase;
+    color: #737373;
+    font-size: 12px;
+}
+
+.wbb-banner-horizontal span {
+    color: #FFF;
+    display: block;
+}
+
+.wbb-banner-horizontal input {
+    border: 0 !important;
+    padding: 0 5px !important;
+    border-radius: 5px !important;
+    background: #FFF !important;
+    height: 30px !important;
+    width: 100% !important;
+}
+
+@media screen and (max-width: 1400px) {
+
+    .wbb-banner-vertical {
         display: none;
+    }
+
+    .wbb-banner-horizontal {
+        display: block;
+    }
+
+    #main {
+        padding-top: 220px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    .wbb-banner-horizontal span {
+        color: #FFF;
+        display: inline;
+    }
+
+    .wbb-banner-horizontal {
+        padding: 0 10px;
+    }
+
+    .wbb-banner-horizontal input {
+        margin-bottom: 0 !important;
     }
 }

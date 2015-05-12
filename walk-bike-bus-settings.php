@@ -24,4 +24,10 @@
 
 	</form>
 
+	<h2>Shortcode</h2>
+	<div class="admin notice">
+		<p>Add this shortcode to a page to insert the login/registration/logging functionality.</p>
+	</div>
+	<pre>[walk_bike_bus]</pre>
+
 </div>
