@@ -2,7 +2,7 @@
 
 namespace WalkBikeBus;
 
-class Commute {
+class Trip {
 
 
 }
