@@ -76,4 +76,11 @@ class Controller {
 	{
 		include(dirname(__DIR__) . '/walk-bike-bus-users.php');
 	}
+
+	public function query_vars( $vars )
+	{
+		$vars[] = 'wbb_action';
+		$vars[] = 'wbb_data';
+		return $vars;
+	}
 }

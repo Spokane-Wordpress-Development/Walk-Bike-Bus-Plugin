@@ -46,4 +46,9 @@ if ( is_admin() )
 	add_action( 'save_post', array( $wbb_neighborhood, 'save_neighborhood_post' ) );
 	add_filter( 'manage_wbb_neighborhood_posts_columns', array( $wbb_neighborhood, 'add_new_columns' ) );
 	add_action( 'manage_posts_custom_column' , array( $wbb_neighborhood, 'custom_columns' ) );
+
+	/**
+	 * Public 'fake' page
+	 */
+	add_filter( 'query_vars', array( $wbb, 'query_vars') );
 }
