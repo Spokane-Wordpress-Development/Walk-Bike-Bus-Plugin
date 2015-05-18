@@ -85,4 +85,40 @@ class Neighborhood {
 				break;
 		}
 	}
+
+	/**
+	 * @param $lat
+	 * @param $lng
+	 *
+	 * @return array
+	 */
+	public static function getNeighborhoodFromLatLng($lat, $lng)
+	{
+		$data = array(
+			'id' => 0,
+			'title' => ''
+		);
+
+		$args = array(
+			'post_type' => 'wbb_neighborhood',
+			'post_status' => 'publish'
+		);
+		$query = new \WP_Query($args);
+		while ($query->have_posts())
+		{
+			$query->the_post();
+			$custom = get_post_custom(get_the_ID());
+			if ($custom['is_active'][0] == 1)
+			{
+				if ($lng >= $custom['west_boundary'][0] && $lng <= $custom['east_boundary'][0] && $lat <= $custom['north_boundary'][0] && $lat >= $custom['south_boundary'][0])
+				{
+					$data['id'] = get_the_ID();
+					$data['title'] = get_the_title();
+					break;
+				}
+			}
+		}
+
+		return $data;
+	}
 }

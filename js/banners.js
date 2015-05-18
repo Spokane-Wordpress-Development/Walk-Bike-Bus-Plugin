@@ -15,6 +15,16 @@ jQuery(document).ready(function($)
     {
         moveBanners();
     });
+
+    $('.wbb-banner input').bind('keypress', function(e)
+    {
+        var code = e.keyCode || e.which;
+        if (code == 13)
+        {
+            var address = encodeURIComponent($(this).val()).replace(/%20/g, '+');
+            window.location = '/?p='+wbb.shortcode_page_id+'&wbb_action=address&wbb_data='+address;
+        }
+    });
 });
 
 function moveBanners()

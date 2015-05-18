@@ -25,6 +25,26 @@ $wbb_neighborhood = new \WalkBikeBus\Neighborhood;
 add_action( 'init', array( $wbb, 'init' ) );
 add_action( 'init', array( $wbb, 'create_post_types' ) );
 
+/**
+ * Register query vars
+ */
+add_filter( 'query_vars', array( $wbb, 'query_vars') );
+
+/**
+ * Register shortcode
+ */
+add_shortcode ( 'walk_bike_bus', array( $wbb, 'short_code') );
+
+/**
+ * Capture form posts
+ */
+add_action ( 'init', array( $wbb, 'form_capture' ) );
+
+/**
+ * load user and neighborhood
+ */
+add_action ( 'init', array( $wbb_user, 'load_user' ) );
+
 if ( is_admin() )
 {
 	add_action( 'admin_init', array( $wbb, 'admin_init' ) );
@@ -46,9 +66,4 @@ if ( is_admin() )
 	add_action( 'save_post', array( $wbb_neighborhood, 'save_neighborhood_post' ) );
 	add_filter( 'manage_wbb_neighborhood_posts_columns', array( $wbb_neighborhood, 'add_new_columns' ) );
 	add_action( 'manage_posts_custom_column' , array( $wbb_neighborhood, 'custom_columns' ) );
-
-	/**
-	 * Public 'fake' page
-	 */
-	add_filter( 'query_vars', array( $wbb, 'query_vars') );
 }

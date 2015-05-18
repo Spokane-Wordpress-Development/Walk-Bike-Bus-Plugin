@@ -8,7 +8,7 @@ $args = array(
 	'post_type' => 'wbb_neighborhood',
 	'post_status' => 'publish'
 );
-$query = new WP_Query($args);
+$query = new WP_Query( $args );
 
 ?>
 
