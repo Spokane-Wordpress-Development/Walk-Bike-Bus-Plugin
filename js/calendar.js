@@ -23,7 +23,7 @@ jQuery(document).ready(function($)
         }
     });
 
-    wbb_calendar.on('click', '#wbb-cancel-entry', function(e)
+    wbb_calendar.on('click', '.wbb-cancel-entry', function(e)
     {
         e.preventDefault();
         $('#wbb-entry').slideUp(500, function()
@@ -44,7 +44,7 @@ jQuery(document).ready(function($)
         $('#wbb-calendar').find('#miles').val(val);
     });
 
-    wbb_calendar.on('click', '#wbb-submit-entry', function(e)
+    wbb_calendar.on('click', '.wbb-submit-entry', function(e)
     {
         e.preventDefault();
 

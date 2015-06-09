@@ -107,6 +107,10 @@
     display: none;
 }
 
+a.wbb-cancel-entry {
+    text-decoration: underline;
+}
+
 @media screen and (max-width:768px) {
 
     #wbb-calendar .wbb-day {

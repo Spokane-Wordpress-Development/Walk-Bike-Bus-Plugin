@@ -121,6 +121,8 @@
 					Entries for <?php echo date('F', $month_starts_at); ?>
 					<span class="day-number"></span>,
 					<?php echo date('Y', $month_starts_at); ?>
+					-
+					<a href="#" class="wbb-cancel-entry">Return to Calendar</a>
 				</strong>
 			</p>
 
@@ -177,8 +179,8 @@
 					<input type="text" id="miles">
 				</div>
 
-				<button id="wbb-submit-entry">Submit</button>
-				<button id="wbb-cancel-entry">Cancel</button>
+				<button class="wbb-submit-entry">Submit</button>
+				<button class="wbb-cancel-entry">Cancel</button>
 
 			</form>
 
