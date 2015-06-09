@@ -16,7 +16,6 @@
 require_once( 'classes/Controller.php' );
 require_once( 'classes/User.php' );
 require_once( 'classes/Neighborhood.php' );
-require_once( 'classes/Trip.php' );
 require_once( 'classes/Location.php' );
 require_once( 'classes/Entry.php' );
 
