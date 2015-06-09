@@ -265,7 +265,14 @@ class Controller {
 
 	private function getLatLon()
 	{
-		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($this->data);
+		$address = $this->data;
+		$pos = (strpos(strtoupper($address), 'SPOKANE'));
+		if ($pos === FALSE)
+		{
+			$address .= ' Spokane, WA';
+		}
+
+		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address);
 		$url = str_replace('#', 'STE+', $url);
 
 		$options = array(
