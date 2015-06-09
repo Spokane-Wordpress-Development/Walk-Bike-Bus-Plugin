@@ -17,6 +17,8 @@ require_once( 'classes/Controller.php' );
 require_once( 'classes/User.php' );
 require_once( 'classes/Neighborhood.php' );
 require_once( 'classes/Trip.php' );
+require_once( 'classes/Location.php' );
+require_once( 'classes/Entry.php' );
 
 $wbb = new \WalkBikeBus\Controller;
 $wbb_user = new \WalkBikeBus\User;
@@ -24,6 +26,11 @@ $wbb_neighborhood = new \WalkBikeBus\Neighborhood;
 
 add_action( 'init', array( $wbb, 'init' ) );
 add_action( 'init', array( $wbb, 'create_post_types' ) );
+
+/**
+ * Activate
+ */
+register_activation_hook( __FILE__, array( $wbb, 'activate') );
 
 /**
  * Register query vars
@@ -39,6 +46,8 @@ add_shortcode ( 'walk_bike_bus', array( $wbb, 'short_code') );
  * Capture form posts
  */
 add_action ( 'init', array( $wbb, 'form_capture' ) );
+add_action ( 'wp_ajax_nopriv_add-entry', array( $wbb, 'ajax_add_entry' ) );
+add_action ( 'wp_ajax_add-entry', array( $wbb, 'ajax_add_entry' ) );
 
 /**
  * load user and neighborhood

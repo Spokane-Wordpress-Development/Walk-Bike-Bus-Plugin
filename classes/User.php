@@ -10,6 +10,8 @@ class User {
 	public $email = '';
 	public $address = '';
 	public $is_on_mailing_list = FALSE;
+	public $locations = array();
+	public $entries = array();
 
 	/**
 	 * @var \WalkBikeBus\Neighborhood
@@ -23,13 +25,14 @@ class User {
 
 	public function save_extra_profile_fields()
 	{
-
 		if ( !current_user_can( 'edit_user', $_POST['user_id'] ) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		update_user_meta( $_POST['user_id'], 'neighborhood_id', $_POST['neighborhood_id'] );
+
+		return TRUE;
 	}
 
 	public function load_user()
@@ -66,6 +69,46 @@ class User {
 					}
 				}
 			}
+
+			$this->get_locations();
+		}
+	}
+
+	public function get_locations()
+	{
+		$locations = Location::getLocationsByUserId($this->id);
+		foreach ($locations as $location)
+		{
+			$loc = new Location;
+			$loc->id = $location->id;
+			$loc->user_id = $location->user_id;
+			$loc->title = $location->title;
+			$loc->miles = $location->miles;
+			$loc->created_at = $location->created_at;
+
+			$this->locations[$location->id] = $loc;
+		}
+	}
+
+	public function get_entries($day=0, $month=0, $year=0)
+	{
+		$entries = Entry::getEntriesByUserId($this->id, $day, $month, $year);
+		foreach ($entries as $e)
+		{
+			$entry = new Entry;
+			$entry->id = $e->id;
+			$entry->user_id = $e->user_id;
+			$entry->entry_date = $e->entry_date;
+			$entry->mode = $e->mode;
+			$entry->miles = $e->miles;
+			$entry->created_at = $e->created_at;
+			$entry->updated_at = $e->updated_at;
+
+			$entry->location = new Location;
+			$entry->location->id = $e->location_id;
+			$entry->location->title = $e->title;
+
+			$this->entries[$e->id] = $entry;
 		}
 	}
 }

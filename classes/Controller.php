@@ -34,6 +34,11 @@ class Controller {
 				wp_enqueue_style( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'css/banners.css', '', time() );
 
 				wp_enqueue_script( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'js/banners.js', '', time(), TRUE );
+				wp_enqueue_script( 'wbb-calendar', plugin_dir_url( dirname( __FILE__ ) ) . 'js/calendar.js', '', time(), TRUE );
+				wp_localize_script( 'wbb-calendar', 'WbbAjax', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'entry_nonce' => wp_create_nonce( 'entry-nonce' )
+				) );
 				wp_enqueue_script( 'wbb-variables', plugin_dir_url( dirname( __FILE__ ) ) . 'js/variables.js', '', time(), TRUE );
 				wp_localize_script( 'wbb-variables', 'wbb', array(
 					'shortcode_page_id' => get_option('wbb_shortcode_page')
@@ -45,6 +50,69 @@ class Controller {
 	public function admin_init()
 	{
 
+	}
+
+	public function activate()
+	{
+		require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'wbb_locations';
+		if( $wpdb->get_var( "SHOW TABLES LIKE '$db_table_name'" ) != $db_table_name )
+		{
+			if ( ! empty( $wpdb->charset ) )
+			{
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			}
+			if ( ! empty( $wpdb->collate ) )
+			{
+				$charset_collate .= " COLLATE $wpdb->collate";
+			}
+
+			$sql = "
+				CREATE TABLE " . $table_name . "
+				(
+					`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+					`user_id` int(11) NOT NULL,
+					`title` varchar(50) NOT NULL DEFAULT '',
+					`miles` decimal(11,2) NOT NULL,
+					`created_at` datetime DEFAULT NULL,
+					PRIMARY KEY (`id`),
+					KEY `user_id` (`user_id`)
+				) " . $charset_collate . ";";
+			dbDelta( $sql );
+		}
+
+		$table_name = $wpdb->prefix . 'wbb_entries';
+		if( $wpdb->get_var( "SHOW TABLES LIKE '$db_table_name'" ) != $db_table_name )
+		{
+			if ( ! empty( $wpdb->charset ) )
+			{
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			}
+			if ( ! empty( $wpdb->collate ) )
+			{
+				$charset_collate .= " COLLATE $wpdb->collate";
+			}
+
+			$sql = "
+				CREATE TABLE " . $table_name . "
+				(
+					`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+					`user_id` int(11) NOT NULL,
+					`location_id` int(11) NOT NULL,
+					`entry_date` date NOT NULL,
+					`mode_type` enum('walk','bike','bus') DEFAULT NULL,
+					`miles` decimal(11,2) NOT NULL,
+					`created_at` datetime NOT NULL,
+					`updated_at` datetime NOT NULL,
+					PRIMARY KEY (`id`),
+					KEY `user_id` (`user_id`),
+					KEY `location_id` (`location_id`),
+					KEY `mode_type` (`mode_type`)
+				) " . $charset_collate . ";";
+			dbDelta( $sql );
+		}
 	}
 
 	public function create_post_types()
@@ -304,5 +372,68 @@ class Controller {
 				}
 			}
 		}
+	}
+
+	public function ajax_add_entry()
+	{
+		$response = array(
+			'success' => 0,
+			'error' => 'Something went wrong. Please try again.'
+		);
+
+		if ( wp_verify_nonce($_POST['entry_nonce'], 'entry-nonce'))
+		{
+			$miles = (strlen(trim($_POST['miles'])) > 0 && is_numeric($_POST['miles'])) ? abs(trim($_POST['miles'])) : 1;
+
+			$location = new Location;
+			if ($_POST['location_id'] > 0)
+			{
+				$location->id = $_POST['location_id'];
+				$location->read();
+				if (!$location->user_id == get_current_user_id())
+				{
+					$location->id = 0;
+				}
+			}
+
+			if ($location->id == 0)
+			{
+				$location->user_id = get_current_user_id();
+				$location->title = (strlen(trim($_POST['title'])) > 0) ? trim($_POST['title']) : 'New Location';
+				$location->miles = $miles;
+
+				$location_id = Location::checkTitle($location->user_id, $location->title);
+				if ($location_id > 0)
+				{
+					$location->id = $location_id;
+					$location->update();
+				}
+				else
+				{
+					$location->create();
+				}
+			}
+
+			$entry = new Entry;
+			$entry->user_id = get_current_user_id();
+			$entry->entry_date = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
+			$entry->mode = $_POST['mode'];
+			$entry->miles = $miles;
+			$entry->location = $location;
+			$entry->create();
+
+			if ($entry->id > 0)
+			{
+				$response['success'] = 1;
+				$response['id'] = $entry->id;
+				$response['title'] = $entry->location->title;
+				$response['miles'] = number_format($entry->miles, 2);
+				$response['day'] = $_POST['day'];
+			}
+		}
+
+		header( 'Content-Type: application/json' );
+		echo json_encode( $response );
+		exit;
 	}
 }

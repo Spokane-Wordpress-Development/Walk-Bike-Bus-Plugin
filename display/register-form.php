@@ -33,7 +33,7 @@
 			<input type="text" id="username" name="username" value="<?php echo (isset($_POST['username'])) ? esc_html($_POST['username']) : ''; ?>">
 		</div>
 
-			<div>
+		<div>
 			<label for="password">Password <strong>*</strong></label>
 			<input type="password" id="password" name="password" value="<?php echo (isset($_POST['password'])) ? esc_html($_POST['password']) : ''; ?>">
 		</div>

@@ -39,3 +39,84 @@
     background: #FFEE38;
     border: 0;
 }
+
+#wbb-calendar h3 {
+    font-weight: normal;
+}
+
+#wbb-calendar .wbb-day {
+    float: left;
+    width: 12%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    border: 1px solid #FFF;
+    height: 75px;
+    background: #999;
+    cursor: pointer;
+}
+
+#wbb-calendar .wbb-day.wbb-day-tracked {
+    background: #6d626c;
+}
+
+#wbb-calendar .wbb-day .wbb-day-number {
+    display: inline-block;
+    padding: 3px;
+    color: #000;
+    border-right: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+    width: 26px;
+    background: #FFF;
+    text-align: center;
+    border-bottom-right-radius: 5px;
+}
+
+#wbb-calendar .wbb-day.wbb-day-today .wbb-day-number {
+    font-weight: bold;
+}
+
+#wbb-calendar .wbb-day .wbb-day-stats {
+    display: block;
+    padding-left: 3px;
+    color: #000;
+}
+
+#wbb-calendar .wbb-day.wbb-day-blank {
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: default;
+}
+
+#wbb-calendar:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#wbb-entry {
+    display: none;
+}
+
+.wbb-single-entry {
+    border: 1px solid #FFF;
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 5px;
+    background: #EEE;
+    color: #000;
+    display: none;
+}
+
+@media screen and (max-width:768px) {
+
+    #wbb-calendar .wbb-day {
+        float: none;
+        width: 100%;
+        margin: 5px;
+        min-height: 75px;
+    }
+
+    #wbb-calendar .wbb-day.wbb-day-blank {
+        display: none;
+    }
+}
