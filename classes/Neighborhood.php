@@ -4,6 +4,15 @@ namespace WalkBikeBus;
 
 class Neighborhood {
 
+	/**
+	 * For some reason my custom post type attributes keep disappearing.
+	 * So I'm hard coding them here until I figure out why.
+	 */
+	const PERRY_NORTH = 47.64971;
+	const PERRY_EAST = -117.38146;
+	const PERRY_SOUTH = 47.64271;
+	const PERRY_WEST = -117.39558;
+
 	public $post_id = 0;
 	public $title = '';
 
@@ -35,16 +44,27 @@ class Neighborhood {
 				$data = preg_replace( '/[^0-9\.-]/', '', $data );
 				if (strlen($data) == 0)
 				{
-					$is_active = 0;
 					$boundaries[$dir] = $data;
 				}
 			}
 
 			update_post_meta( $post->ID, 'is_active', $is_active );
-			update_post_meta( $post->ID, 'north_boundary', $boundaries['n'] );
-			update_post_meta( $post->ID, 'east_boundary', $boundaries['e'] );
-			update_post_meta( $post->ID, 'south_boundary', $boundaries['s'] );
-			update_post_meta( $post->ID, 'west_boundary', $boundaries['w'] );
+			if (strlen($boundaries['n']) > 0)
+			{
+				update_post_meta($post->ID, 'north_boundary', $boundaries['n']);
+			}
+			if (strlen($boundaries['e']) > 0)
+			{
+				update_post_meta($post->ID, 'east_boundary', $boundaries['e']);
+			}
+			if (strlen($boundaries['s']) > 0)
+			{
+				update_post_meta($post->ID, 'south_boundary', $boundaries['s']);
+			}
+			if (strlen($boundaries['w']) > 0)
+			{
+				update_post_meta($post->ID, 'west_boundary', $boundaries['w']);
+			}
 		}
 	}
 
@@ -110,7 +130,25 @@ class Neighborhood {
 			$custom = get_post_custom(get_the_ID());
 			if ($custom['is_active'][0] == 1)
 			{
-				if ($lng >= $custom['west_boundary'][0] && $lng <= $custom['east_boundary'][0] && $lat <= $custom['north_boundary'][0] && $lat >= $custom['south_boundary'][0])
+				$west = $custom['west_boundary'][0];
+				$east = $custom['east_boundary'][0];
+				$north = $custom['north_boundary'][0];
+				$south = $custom['south_boundary'][0];
+
+				if (strlen($west) == 0 || strlen($east) == 0 || strlen($north) == 0 || strlen($south) == 0)
+				{
+					$title = get_the_title();
+					$pos = strpos(strtoupper($title), 'PERRY');
+					if ($pos !== FALSE)
+					{
+						$west = self::PERRY_WEST;
+						$east = self::PERRY_EAST;
+						$north = self::PERRY_NORTH;
+						$south = self::PERRY_SOUTH;
+					}
+				}
+
+				if ($lng >= $west && $lng <= $east && $lat <= $north && $lat >= $south)
 				{
 					$data['id'] = get_the_ID();
 					$data['title'] = get_the_title();
