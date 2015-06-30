@@ -32,6 +32,10 @@ class Controller {
 			{
 				wp_enqueue_style( 'wbb-styles', plugin_dir_url( dirname( __FILE__ ) ) . 'css/wbb.css', '', time() );
 				wp_enqueue_style( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'css/banners.css', '', time() );
+				if (get_current_user_id() == 0)
+				{
+					wp_enqueue_style( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'css/banners-2.css', '', time() );
+				}
 
 				wp_enqueue_script( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'js/banners.js', '', time(), TRUE );
 				wp_enqueue_script( 'wbb-calendar', plugin_dir_url( dirname( __FILE__ ) ) . 'js/calendar.js', '', time(), TRUE );
@@ -41,7 +45,8 @@ class Controller {
 				) );
 				wp_enqueue_script( 'wbb-variables', plugin_dir_url( dirname( __FILE__ ) ) . 'js/variables.js', '', time(), TRUE );
 				wp_localize_script( 'wbb-variables', 'wbb', array(
-					'shortcode_page_id' => get_option('wbb_shortcode_page')
+					'shortcode_page_id' => get_option('wbb_shortcode_page'),
+					'wp_user_id' => get_current_user_id()
 				) );
 			}
 		}
@@ -180,7 +185,6 @@ class Controller {
 	{
 		$this->action = get_query_var('wbb_action');
 		$this->data = get_query_var('wbb_data');
-		$this->return = "<h1>Walk Bike Bus</h1>";
 
 		switch ( $this->action )
 		{

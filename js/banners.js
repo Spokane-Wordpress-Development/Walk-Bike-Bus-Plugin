@@ -4,11 +4,14 @@ jQuery(document).ready(function($)
         .append('<div class="wbb-banner wbb-banner-vertical wbb-banner-left"></div>')
         .append('<div class="wbb-banner wbb-banner-vertical  wbb-banner-right"><input type="text"></div>');
 
-    $('#header_main').append('' +
-    '<div class="wbb-banner wbb-banner-horizontal">' +
-    '<p><span>Enter your home address</span> to see if you\'re eligible for a free packet and gift!</p>' +
-    '<input type="text">' +
-    '</div>');
+    if (wbb.wp_user_id == 0)
+    {
+        $('#header_main').append('' +
+        '<div class="wbb-banner wbb-banner-horizontal">' +
+        '<p><span>Enter your home address</span> to see if you\'re eligible for a free packet and gift!</p>' +
+        '<input type="text">' +
+        '</div>');
+    }
 
     moveBanners();
     $(window).resize(function()

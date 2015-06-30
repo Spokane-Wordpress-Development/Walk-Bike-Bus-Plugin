@@ -61,10 +61,6 @@
     .wbb-banner-horizontal {
         display: block;
     }
-
-    #main {
-        padding-top: 220px !important;
-    }
 }
 
 @media screen and (max-width: 768px) {

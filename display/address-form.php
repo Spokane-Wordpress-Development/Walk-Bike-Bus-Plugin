@@ -1,3 +1,4 @@
+<h2>Are You Eligible?</h2>
 <form method="post" class="wbb-form">
 	<?php wp_nonce_field('wbb_address', 'wbb_nonce'); ?>
 	<input type="hidden" name="wbb_action" value="address">

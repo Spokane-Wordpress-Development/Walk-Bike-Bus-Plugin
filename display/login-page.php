@@ -19,6 +19,7 @@ $args = array (
 
 ?>
 
+<h2>Already Registered?</h2>
 <p>
 	If you have a login and password, enter them here to start tracking your commutes.
 	Otherwise, you can enter your address below to see if you live in a qualifying area.
