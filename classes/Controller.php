@@ -38,18 +38,21 @@ class Controller {
 				}
 
 				wp_enqueue_script( 'wbb-banners', plugin_dir_url( dirname( __FILE__ ) ) . 'js/banners.js', '', time(), TRUE );
-				wp_enqueue_script( 'wbb-calendar', plugin_dir_url( dirname( __FILE__ ) ) . 'js/calendar.js', '', time(), TRUE );
-				wp_localize_script( 'wbb-calendar', 'WbbAjax', array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'entry_nonce' => wp_create_nonce( 'entry-nonce' )
-				) );
-				wp_enqueue_script( 'wbb-variables', plugin_dir_url( dirname( __FILE__ ) ) . 'js/variables.js', '', time(), TRUE );
-				wp_localize_script( 'wbb-variables', 'wbb', array(
-					'shortcode_page_id' => get_option('wbb_shortcode_page'),
-					'wp_user_id' => get_current_user_id()
-				) );
 			}
 		}
+
+		wp_enqueue_script( 'wbb-calendar', plugin_dir_url( dirname( __FILE__ ) ) . 'js/calendar.js', '', time(), TRUE );
+		wp_localize_script( 'wbb-calendar', 'WbbAjax', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'entry_nonce' => wp_create_nonce( 'entry-nonce' )
+		) );
+
+		wp_enqueue_script( 'wbb-common', plugin_dir_url( dirname( __FILE__ ) ) . 'js/common.js', '', time(), TRUE );
+		wp_localize_script( 'wbb-common', 'wbb', array(
+			'shortcode_page_id' => get_option('wbb_shortcode_page'),
+			'wp_user_id' => get_current_user_id(),
+			'plugin_dir' => plugin_dir_url( dirname( __FILE__ ) )
+		) );
 	}
 
 	public function admin_init()
@@ -148,6 +151,33 @@ class Controller {
 		);
 
 		register_post_type('wbb_neighborhood', $args);
+
+		$labels = array (
+			'name' => __( 'Subscribers' ),
+			'singular_name' => __( 'Subscriber' ),
+			'add_new_item' => __( 'Add New Subscriber' ),
+			'edit_item' => __( 'Edit Subscriber' ),
+			'new_item' => __( 'New Subscriber' ),
+			'view_item' => __( 'View Subscriber' ),
+			'search_items' => __( 'Search Subscribers' ),
+			'not_found' => __( 'No subscribers found.' )
+		);
+
+		$args = array (
+			'labels' => $labels,
+			'hierarchical' => FALSE,
+			'description' => 'Subscribers',
+			'supports' => array('title', 'editor'),
+			'public' => FALSE,
+			'show_ui' => TRUE,
+			'show_in_menu' => FALSE,
+			'show_in_nav_menus' => FALSE,
+			'publicly_queryable' => FALSE,
+			'exclude_from_search' => FALSE,
+			'has_archive' => TRUE
+		);
+
+		register_post_type('wbb_subscriber', $args);
 	}
 
 	public function add_menus()
@@ -156,6 +186,7 @@ class Controller {
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Settings', 'Settings', 'manage_options', 'walk_bike_bus', array($this, 'plugin_settings_page'));
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Users', 'Users', 'manage_options', 'walk_bike_bus_users', array($this, 'users_page'));
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Neighborhoods', 'Neighborhoods', 'manage_options', 'edit.php?post_type=wbb_neighborhood');
+		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Subscribers', 'Subscribers', 'manage_options', 'edit.php?post_type=wbb_subscriber');
 	}
 
 	public function register_settings()
@@ -224,12 +255,37 @@ class Controller {
 				$data = Neighborhood::getNeighborhoodFromLatLng($this->lat, $this->lng);
 				if ($data['id'] == 0)
 				{
-					$this->return .= '<p class="wbb-alert wbb-alert-danger">The address you entered does not lie within one of our approved areas.</p>';
+					$this->return .= "
+						<script>
+
+							var wbb_popup_width = 450;
+							var wbb_popup_height = 300;
+							var wbb_popup_html = '<img src=\"" . plugin_dir_url( dirname( __FILE__ ) ) . "/images/sorry.png\"><br><br>\\
+							Sign up for the Walk Bike Bus<br>newsletter to stay informed.<br><br>\\
+							Email Address:\\
+							<form id=\"wbb-newsletter-form\">\\
+							<input name=\"email\"><br>\\
+							<button class=\"submit\">Submit</button>\\
+							</form>';
+
+						</script>
+					";
+					//$this->return .= '<p class="wbb-alert wbb-alert-danger">The address you entered does not lie within one of our approved areas.</p>';
 					return $this->showAddressForm();
 				}
 				else
 				{
-					$this->return .= '<p class="wbb-alert wbb-alert-success">Congrats! You are eligible to register for the ' . $data['title'] . ' neighborhood!</p>';
+					$this->return .= "
+						<script>
+
+							var wbb_popup_width = 450;
+							var wbb_popup_height = 200;
+							var wbb_popup_html = '<img src=\"" . plugin_dir_url( dirname( __FILE__ ) ) . "/images/congrats.png\"><br><br>\\
+							You are part of a very small number of people in " . $data['title'] . " that are eligible to participate in our Walk Bike Bus pilot program!';
+
+						</script>
+					";
+					//$this->return .= '<p class="wbb-alert wbb-alert-success">Congrats! You are eligible to register for the ' . $data['title'] . ' neighborhood!</p>';
 					$_SESSION['wbb_register_neighborhood_id'] = $data['id'];
 					$_SESSION['wbb_register_neighborhood_title'] = $data['title'];
 					return $this->showRegisterForm();
@@ -270,6 +326,7 @@ class Controller {
 	private function getLatLon()
 	{
 		$address = $this->data;
+		$_SESSION['wbb_address'] = $address;
 		$pos = (strpos(strtoupper($address), 'SPOKANE'));
 		if ($pos === FALSE)
 		{
@@ -375,6 +432,22 @@ class Controller {
 							update_user_meta( $user_id, 'address', $_POST['address'] );
 							update_user_meta( $user_id, 'mailing_list', isset($_POST['mailing_list']) ? '1' : '0' );
 
+							if (isset($_POST['order']))
+							{
+								$order = $_POST['order'];
+								if (count($order) > 0)
+								{
+									update_user_meta( $user_id, 'order', json_encode($order) );
+								}
+							}
+
+							update_user_meta( $user_id, 'gift', $_POST['gift'] );
+							update_user_meta( $user_id, 'full_name', $_POST['full_name'] );
+							update_user_meta( $user_id, 'address', $_POST['address'] );
+							update_user_meta( $user_id, 'date1', $_POST['date1'] );
+							update_user_meta( $user_id, 'date2', $_POST['date2'] );
+							update_user_meta( $user_id, 'date3', $_POST['date3'] );
+
 							header('Location:'.$this->current_page.'?wbb_action=login&wbb_data=registration_complete');
 							exit;
 						}
@@ -446,5 +519,16 @@ class Controller {
 		header( 'Content-Type: application/json' );
 		echo json_encode( $response );
 		exit;
+	}
+
+	public function ajax_subscribe()
+	{
+		$post = array(
+			'post_title' => $_POST['email'],
+			'post_type' => 'wbb_subscriber',
+			'post_status' => 'publish'
+		);
+
+		wp_insert_post( $post );
 	}
 }

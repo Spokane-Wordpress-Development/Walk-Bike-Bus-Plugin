@@ -16,12 +16,14 @@
 require_once( 'classes/Controller.php' );
 require_once( 'classes/User.php' );
 require_once( 'classes/Neighborhood.php' );
+require_once( 'classes/Subscriber.php' );
 require_once( 'classes/Location.php' );
 require_once( 'classes/Entry.php' );
 
 $wbb = new \WalkBikeBus\Controller;
 $wbb_user = new \WalkBikeBus\User;
 $wbb_neighborhood = new \WalkBikeBus\Neighborhood;
+$wbb_subscriber = new \WalkBikeBus\Subscriber;
 
 add_action( 'init', array( $wbb, 'init' ) );
 add_action( 'init', array( $wbb, 'create_post_types' ) );
@@ -47,6 +49,8 @@ add_shortcode ( 'walk_bike_bus', array( $wbb, 'short_code') );
 add_action ( 'init', array( $wbb, 'form_capture' ) );
 add_action ( 'wp_ajax_nopriv_add-entry', array( $wbb, 'ajax_add_entry' ) );
 add_action ( 'wp_ajax_add-entry', array( $wbb, 'ajax_add_entry' ) );
+add_action ( 'wp_ajax_nopriv_subscribe', array( $wbb, 'ajax_subscribe' ) );
+add_action ( 'wp_ajax_subscribe', array( $wbb, 'ajax_subscribe' ) );
 
 /**
  * load user and neighborhood
@@ -74,4 +78,10 @@ if ( is_admin() )
 	add_action( 'save_post', array( $wbb_neighborhood, 'save_neighborhood_post' ) );
 	add_filter( 'manage_wbb_neighborhood_posts_columns', array( $wbb_neighborhood, 'add_new_columns' ) );
 	add_action( 'manage_posts_custom_column' , array( $wbb_neighborhood, 'custom_columns' ) );
+
+	/**
+	 * Subscriber additions
+	 */
+	add_filter('gettext', array( $wbb_subscriber, 'custom_enter_title' ) );
+
 }

@@ -112,6 +112,52 @@ a.wbb-cancel-entry {
     text-decoration: underline;
 }
 
+/* modal popup */
+
+#wbb-modal-background {
+    position: absolute;
+    top: 0;
+    display: none;
+    z-index: 1005;
+    background-color: rgba(0,0,0,0.5);
+}
+
+#wbb-modal-popup {
+    padding: 15px;
+    border: 1px solid #FFF;
+    position: absolute;
+    z-index: 1006;
+    background-color: rgba(0,0,0,1);
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+}
+
+#wbb-modal-popup .close {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+    font-size: 16px;
+}
+
+#wbb-modal-popup .close span {
+    cursor: pointer;
+}
+
+#wbb-modal-popup input {
+    width: 80%;
+}
+
+#wbb-modal-popup button {
+    border: 0;
+    color: #FFF;
+    padding: 5px;
+    background: #7b406a;
+    margin: 10px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
 @media screen and (max-width:768px) {
 
     #wbb-calendar .wbb-day {

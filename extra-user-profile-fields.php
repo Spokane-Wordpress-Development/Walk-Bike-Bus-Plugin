@@ -30,5 +30,74 @@ $query = new WP_Query( $args );
 			</select>
 		</td>
 	</tr>
+	<tr>
+		<th>Subscribed</th>
+		<td><?php echo ( get_user_meta( $user_id, 'mailing_list', TRUE ) == 1) ? 'Yes' : 'No'; ?></td>
+	</tr>
+	<tr>
+		<th>Order</th>
+		<td>
+			<?php
+
+			$order = get_user_meta( $user_id, 'order', TRUE );
+			if (empty($order))
+			{
+				echo 'N/A';
+			}
+			else
+			{
+				echo implode('<br>', json_decode($order, TRUE));
+			}
+
+			?>
+		</td>
+	</tr>
+	<tr>
+		<th>Gift</th>
+		<td>
+			<?php
+
+			$gift = get_user_meta( $user_id, 'gift', TRUE );
+			if (empty($gift))
+			{
+				echo 'N/A';
+			}
+			else
+			{
+				echo $gift;
+			}
+
+			?>
+		</td>
+	</tr>
+	<tr>
+		<th>Delivery</th>
+		<td>
+			<?php
+
+			$full_name = get_user_meta( $user_id, 'full_name', TRUE );
+			if (!empty($full_name))
+			{
+				echo $full_name . '<br>';
+			}
+			$address = get_user_meta( $user_id, 'address', TRUE );
+			if (!empty($address))
+			{
+				echo $address . '<br>';
+			}
+			echo '<ol>';
+			for ($x=1; $x<=3; $x++)
+			{
+				$date = get_user_meta( $user_id, 'date'.$x, TRUE );
+				if (!empty($date))
+				{
+					echo '<li>' . $date . '</li>';
+				}
+			}
+			echo '</ol>';
+
+			?>
+		</td>
+	</tr>
 
 </table>
