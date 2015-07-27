@@ -126,8 +126,8 @@ class Controller {
 	public function create_post_types()
 	{
 		$labels = array (
-			'name' => __( 'Neighborhoods' ),
-			'singular_name' => __( 'Neighborhood' ),
+			'name' => __( 'WBB Neighborhoods' ),
+			'singular_name' => __( 'WBB Neighborhood' ),
 			'add_new_item' => __( 'Add New Neighborhood' ),
 			'edit_item' => __( 'Edit Neighborhood' ),
 			'new_item' => __( 'New Neighborhood' ),
@@ -141,11 +141,11 @@ class Controller {
 			'hierarchical' => FALSE,
 			'description' => 'Neighborhoods',
 			'supports' => array('title', 'editor'),
-			'public' => FALSE,
+			'public' => TRUE,
 			'show_ui' => TRUE,
-			'show_in_menu' => FALSE,
-			'show_in_nav_menus' => FALSE,
-			'publicly_queryable' => FALSE,
+			'show_in_menu' => TRUE,
+			'show_in_nav_menus' => TRUE,
+			'publicly_queryable' => TRUE,
 			'exclude_from_search' => FALSE,
 			'has_archive' => TRUE
 		);
@@ -182,10 +182,10 @@ class Controller {
 
 	public function add_menus()
 	{
-		add_menu_page('Walk Bike Bus Settings', 'Walk Bike Bus', 'manage_options', 'walk_bike_bus', array($this, 'plugin_settings_page'), '', 5);
+		add_menu_page('Walk Bike Bus Settings', 'Walk Bike Bus', 'manage_options', 'walk_bike_bus', array($this, 'plugin_settings_page'), '');
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Settings', 'Settings', 'manage_options', 'walk_bike_bus', array($this, 'plugin_settings_page'));
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Users', 'Users', 'manage_options', 'walk_bike_bus_users', array($this, 'users_page'));
-		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Neighborhoods', 'Neighborhoods', 'manage_options', 'edit.php?post_type=wbb_neighborhood');
+		//add_submenu_page('walk_bike_bus', 'Walk Bike Bus Neighborhoods', 'Neighborhoods', 'manage_options', 'edit.php?post_type=wbb_neighborhood');
 		add_submenu_page('walk_bike_bus', 'Walk Bike Bus Subscribers', 'Subscribers', 'manage_options', 'edit.php?post_type=wbb_subscriber');
 	}
 
