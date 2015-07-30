@@ -2,7 +2,13 @@
 
 global $post;
 $custom = get_post_custom($post->ID);
-$is_active = $custom['is_active'][0];
+
+/**
+ * $is_active keeps getting reset to an empty string and I don't know why
+ * So I'm going to use the boundaries to determine if it's active (until I figure it out)
+ */
+$is_active = $custom['neighborhood_is_active'][0];
+
 $north_boundary = $custom['north_boundary'][0];
 $east_boundary = $custom['east_boundary'][0];
 $south_boundary = $custom['south_boundary'][0];
@@ -11,6 +17,7 @@ $west_boundary = $custom['west_boundary'][0];
 ?>
 
 <table class="form-table">
+	<!--
 	<tr>
 		<th>
 			<label for="wbb-neighborhood-is-active">
@@ -18,12 +25,13 @@ $west_boundary = $custom['west_boundary'][0];
 			</label>
 		</th>
 		<td>
-			<select name="is_active" id="wbb-neighborhood-is-active">
-				<option value="0"<?php if ($is_active == 0) { ?> selected<?php } ?>>No</option>
-				<option value="1"<?php if ($is_active == 1) { ?> selected<?php } ?>>Yes</option>
+			<select name="neighborhood_is_active" id="wbb-neighborhood-is-active">
+				<option value="0"<?php if ($is_active == '0') { ?> selected<?php } ?>>No</option>
+				<option value="1"<?php if ($is_active == '1') { ?> selected<?php } ?>>Yes</option>
 			</select>
 		</td>
 	</tr>
+	-->
 	<tr>
 		<th>
 			<label for="wbb-neighborhood-north-boundary">

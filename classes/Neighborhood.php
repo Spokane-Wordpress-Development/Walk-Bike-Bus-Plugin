@@ -31,7 +31,8 @@ class Neighborhood {
 		global $post;
 		if ($post->post_type == 'wbb_neighborhood')
 		{
-			$is_active = $_POST['is_active'];
+			//$is_active = $_POST['neighborhood_is_active'];
+			$is_active = (strlen($_POST['north_boundary']) > 0) ? '1' : '0';
 
 			$boundaries = array();
 			$boundaries['n'] = $_POST['north_boundary'];
@@ -48,7 +49,7 @@ class Neighborhood {
 				}
 			}
 
-			update_post_meta( $post->ID, 'is_active', $is_active );
+			update_post_meta( $post->ID, 'neighborhood_is_active', $is_active );
 			if (strlen($boundaries['n']) > 0)
 			{
 				update_post_meta($post->ID, 'north_boundary', $boundaries['n']);
@@ -85,7 +86,9 @@ class Neighborhood {
 		switch ( $column )
 		{
 			case 'is_active':
-				echo (get_post_meta( $post->ID, 'is_active', TRUE) == 1) ? 'Yes' : 'No';
+				//echo (get_post_meta( $post->ID, 'neighborhood_is_active', TRUE) == '1') ? 'Yes' : 'No';
+				$temp = get_post_meta( $post->ID, 'north_boundary', TRUE);
+				echo (strlen($temp) > 0) ? 'Yes' : 'No';
 				break;
 
 			case 'boundaries':
@@ -128,7 +131,8 @@ class Neighborhood {
 		{
 			$query->the_post();
 			$custom = get_post_custom(get_the_ID());
-			if ($custom['is_active'][0] == 1)
+			//if ($custom['neighborhood_is_active'][0] == '1')
+			if (strlen($custom['north_boundary'][0]) > 0)
 			{
 				$west = $custom['west_boundary'][0];
 				$east = $custom['east_boundary'][0];
