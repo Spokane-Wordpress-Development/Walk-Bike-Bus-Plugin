@@ -255,21 +255,42 @@ class Controller {
 				$data = Neighborhood::getNeighborhoodFromLatLng($this->lat, $this->lng);
 				if ($data['id'] == 0)
 				{
-					$this->return .= "
-						<script>
+					if (strlen($data['expires_at']) > 0 && strtotime($data['expires_at']) < strtotime(date('Y-m-d')))
+					{
+						$this->return .= "
+							<script>
 
-							var wbb_popup_width = 450;
-							var wbb_popup_height = 300;
-							var wbb_popup_html = '<img src=\"" . plugin_dir_url( dirname( __FILE__ ) ) . "/images/sorry.png\"><br><br>\\
-							Sign up for the Walk Bike Bus<br>newsletter to stay informed.<br><br>\\
-							Email Address:\\
-							<form id=\"wbb-newsletter-form\">\\
-							<input name=\"email\"><br>\\
-							<button class=\"submit\">Submit</button>\\
-							</form>';
+								var wbb_popup_width = 450;
+								var wbb_popup_height = 300;
+								var wbb_popup_html = 'We are sorry, but registration has ended for the " . $data['title'] . " neighborhood.<br><br>\\
+								Sign up for the Walk Bike Bus<br>newsletter to stay informed.<br><br>\\
+								Email Address:\\
+								<form id=\"wbb-newsletter-form\">\\
+								<input name=\"email\"><br>\\
+								<button class=\"submit\">Submit</button>\\
+								</form>';
 
-						</script>
-					";
+							</script>
+						";
+					}
+					else
+					{
+						$this->return .= "
+							<script>
+
+								var wbb_popup_width = 450;
+								var wbb_popup_height = 300;
+								var wbb_popup_html = '<img src=\"" . plugin_dir_url(dirname(__FILE__)) . "/images/sorry.png\"><br><br>\\
+								Sign up for the Walk Bike Bus<br>newsletter to stay informed.<br><br>\\
+								Email Address:\\
+								<form id=\"wbb-newsletter-form\">\\
+								<input name=\"email\"><br>\\
+								<button class=\"submit\">Submit</button>\\
+								</form>';
+
+							</script>
+						";
+					}
 					//$this->return .= '<p class="wbb-alert wbb-alert-danger">The address you entered does not lie within one of our approved areas.</p>';
 					return $this->showAddressForm();
 				}
@@ -447,6 +468,8 @@ class Controller {
 							update_user_meta( $user_id, 'date1', $_POST['date1'] );
 							update_user_meta( $user_id, 'date2', $_POST['date2'] );
 							update_user_meta( $user_id, 'date3', $_POST['date3'] );
+
+							wp_mail('info@walkbikebus.org', 'New Walk Bike Bus Registration', $_POST['full_name'] . ' has just signed up. Check the website for complete registration information.');
 
 							header('Location:'.$this->current_page.'?wbb_action=login&wbb_data=registration_complete');
 							exit;

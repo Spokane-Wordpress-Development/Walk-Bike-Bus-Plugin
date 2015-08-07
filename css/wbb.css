@@ -123,6 +123,7 @@ a.wbb-cancel-entry {
 }
 
 #wbb-modal-popup {
+    display: none;
     padding: 15px;
     border: 1px solid #FFF;
     position: absolute;

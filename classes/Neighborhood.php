@@ -131,7 +131,8 @@ class Neighborhood {
 	{
 		$data = array(
 			'id' => 0,
-			'title' => ''
+			'title' => '',
+			'expires_at'
 		);
 
 		$args = array(
@@ -143,32 +144,39 @@ class Neighborhood {
 		{
 			$query->the_post();
 			$custom = get_post_custom(get_the_ID());
-			//if ($custom['neighborhood_is_active'][0] == '1')
-			if (strlen($custom['north_boundary'][0]) > 0)
+
+			$expires_at = (array_key_exists('expires_at', $custom)) ? $custom['expires_at'][0] : '';
+			$data['expires_at'] = $expires_at;
+			$data['title'] = get_the_title();
+
+			if (strlen($expires_at) == 0 || strtotime($expires_at) > strtotime(date('Y-m-d')))
 			{
-				$west = $custom['west_boundary'][0];
-				$east = $custom['east_boundary'][0];
-				$north = $custom['north_boundary'][0];
-				$south = $custom['south_boundary'][0];
-
-				if (strlen($west) == 0 || strlen($east) == 0 || strlen($north) == 0 || strlen($south) == 0)
+				//if ($custom['neighborhood_is_active'][0] == '1')
+				if(strlen($custom['north_boundary'][0]) > 0)
 				{
-					$title = get_the_title();
-					$pos = strpos(strtoupper($title), 'PERRY');
-					if ($pos !== FALSE)
+					$west = $custom['west_boundary'][0];
+					$east = $custom['east_boundary'][0];
+					$north = $custom['north_boundary'][0];
+					$south = $custom['south_boundary'][0];
+
+					if(strlen($west) == 0 || strlen($east) == 0 || strlen($north) == 0 || strlen($south) == 0)
 					{
-						$west = self::PERRY_WEST;
-						$east = self::PERRY_EAST;
-						$north = self::PERRY_NORTH;
-						$south = self::PERRY_SOUTH;
+						$title = get_the_title();
+						$pos = strpos(strtoupper($title), 'PERRY');
+						if($pos !== FALSE)
+						{
+							$west = self::PERRY_WEST;
+							$east = self::PERRY_EAST;
+							$north = self::PERRY_NORTH;
+							$south = self::PERRY_SOUTH;
+						}
 					}
-				}
 
-				if ($lng >= $west && $lng <= $east && $lat <= $north && $lat >= $south)
-				{
-					$data['id'] = get_the_ID();
-					$data['title'] = get_the_title();
-					break;
+					if($lng >= $west && $lng <= $east && $lat <= $north && $lat >= $south)
+					{
+						$data['id'] = get_the_ID();
+						break;
+					}
 				}
 			}
 		}

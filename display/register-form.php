@@ -136,7 +136,7 @@
 				Bikes on Buses Brochure
 			</label>
 
-			<p>CLAIM YOUR FREE GIFT</p>
+			<p>CLAIM YOUR FREE GIFT (subject to availability)</p>
 			<label>
 				<input type="radio" name="gift" value="" checked> No thanks<br>
 				<input type="radio" name="gift" value="band"> Illuminated High-Visibility Adjustable Band<br>

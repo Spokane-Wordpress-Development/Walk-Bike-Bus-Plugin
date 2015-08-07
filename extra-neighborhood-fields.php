@@ -40,7 +40,7 @@ $expires_at = (array_key_exists('expires_at', $custom)) ? $custom['expires_at'][
 			</label>
 		</th>
 		<td>
-			<input name="expires_at" id="wbb-neighborhood-expires-at" value="<?php echo esc_html($xpires_at); ?>" placeholder="ex: 10/15/2015">
+			<input name="expires_at" id="wbb-neighborhood-expires-at" value="<?php echo esc_html($expires_at); ?>" placeholder="ex: 10/15/2015">
 		</td>
 	</tr>
 	<tr>
