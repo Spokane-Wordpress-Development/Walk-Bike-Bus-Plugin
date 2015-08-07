@@ -15,6 +15,11 @@ class Neighborhood {
 
 	public $post_id = 0;
 	public $title = '';
+	public $north_boundary;
+	public $east_boundary;
+	public $south_boundary;
+	public $west_boundary;
+	public $expires_at;
 
 	public function extra_neighborhood_meta()
 	{
@@ -29,7 +34,7 @@ class Neighborhood {
 	public function save_neighborhood_post()
 	{
 		global $post;
-		if ($post->post_type == 'wbb_neighborhood')
+		if ($post->post_type == 'wbb_neighborhood' && isset($_POST['north_boundary']))
 		{
 			//$is_active = $_POST['neighborhood_is_active'];
 			$is_active = (strlen($_POST['north_boundary']) > 0) ? '1' : '0';
@@ -66,6 +71,7 @@ class Neighborhood {
 			{
 				update_post_meta($post->ID, 'west_boundary', $boundaries['w']);
 			}
+			update_post_meta($post->ID, 'expires_at', $_POST['expires_at']);
 		}
 	}
 
@@ -73,6 +79,7 @@ class Neighborhood {
 	{
 		$new = array(
 			'is_active' => 'Active',
+			'expires_at' => 'Registration Ends',
 			'boundaries' => 'Boundaries'
 		);
 		$columns = array_slice( $columns, 0, 2, TRUE ) + $new + array_slice( $columns, 2, NULL, TRUE );
@@ -89,6 +96,11 @@ class Neighborhood {
 				//echo (get_post_meta( $post->ID, 'neighborhood_is_active', TRUE) == '1') ? 'Yes' : 'No';
 				$temp = get_post_meta( $post->ID, 'north_boundary', TRUE);
 				echo (strlen($temp) > 0) ? 'Yes' : 'No';
+				break;
+
+			case 'expires_at':
+				$temp = get_post_meta( $post->ID, 'expires_at', TRUE);
+				echo (strlen($temp) == 0) ? 'Never' : date('F j, Y', strtotime($temp));
 				break;
 
 			case 'boundaries':

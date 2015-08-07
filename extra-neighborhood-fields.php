@@ -9,10 +9,11 @@ $custom = get_post_custom($post->ID);
  */
 $is_active = $custom['neighborhood_is_active'][0];
 
-$north_boundary = $custom['north_boundary'][0];
-$east_boundary = $custom['east_boundary'][0];
-$south_boundary = $custom['south_boundary'][0];
-$west_boundary = $custom['west_boundary'][0];
+$north_boundary = (array_key_exists('north_boundary', $custom)) ? $custom['north_boundary'][0] : '';
+$east_boundary = (array_key_exists('east_boundary', $custom)) ? $custom['east_boundary'][0] : '';
+$south_boundary = (array_key_exists('south_boundary', $custom)) ? $custom['south_boundary'][0] : '';
+$west_boundary = (array_key_exists('west_boundary', $custom)) ? $custom['west_boundary'][0] : '';
+$expires_at = (array_key_exists('expires_at', $custom)) ? $custom['expires_at'][0] : '';
 
 ?>
 
@@ -32,6 +33,16 @@ $west_boundary = $custom['west_boundary'][0];
 		</td>
 	</tr>
 	-->
+	<tr>
+		<th>
+			<label for="wbb-neighborhood-expires-at">
+				Last Day to Register:
+			</label>
+		</th>
+		<td>
+			<input name="expires_at" id="wbb-neighborhood-expires-at" value="<?php echo esc_html($xpires_at); ?>" placeholder="ex: 10/15/2015">
+		</td>
+	</tr>
 	<tr>
 		<th>
 			<label for="wbb-neighborhood-north-boundary">
