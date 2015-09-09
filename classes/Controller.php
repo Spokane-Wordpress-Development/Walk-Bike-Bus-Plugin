@@ -4,6 +4,8 @@ namespace WalkBikeBus;
 
 class Controller {
 
+	const API_KEY = 'LhBDgx9AFH4eqp';
+
 	public $action = '';
 	public $data = '';
 	public $return = '';
@@ -388,6 +390,156 @@ class Controller {
 
 	public function form_capture()
 	{
+		header('Content-Type: application/json');
+		global $wpdb;
+
+		/* custom cross-domain GET for mycommute.org import */
+		if ( isset( $_GET['wbb_import'] ) && isset( $_GET['api_key'] ) )
+		{
+			if ( $_GET['api_key'] != self::API_KEY )
+			{
+				echo json_encode( array( 'success' => 0, 'error' => 'Incorrect API Key' ) );
+			}
+			else
+			{
+				$neighborhood_id = ( isset( $_GET['neighborhood_id'] ) && is_numeric( $_GET['neighborhood_id'] ) ) ? abs( round( $_GET['neighborhood_id'] ) ) : 0;
+				$user_id = ( isset( $_GET['user_id'] ) && is_numeric( $_GET['user_id'] ) ) ? abs( round( $_GET['user_id'] ) ) : 0;
+				$location_id = ( isset( $_GET['location_id'] ) && is_numeric( $_GET['location_id'] ) ) ? abs( round( $_GET['location_id'] ) ) : 0;
+				$entry_id = ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) ) ? abs( round( $_GET['entry_id'] ) ) : 0;
+
+				$return = array(
+					'success' => 1,
+					'neighborhoods' => array(),
+					'users' => array(),
+					'locations' => array(),
+					'entries' => array()
+				);
+
+				/* neighborhoods */
+				$sql = "
+					SELECT
+						ID AS id,
+						post_title AS title
+					FROM
+						" . $wpdb->prefix . "posts
+					WHERE
+						post_type = 'wbb_neighborhood'
+						AND ID > " . $neighborhood_id . "
+					ORDER BY
+						ID ASC";
+				$results = $wpdb->get_results($sql);
+				foreach ($results as $result)
+				{
+					$return['neighborhoods'][] = $result;
+				}
+
+				/* users */
+				$sql = "
+					SELECT
+						u.ID AS id,
+						u.user_email AS email,
+						fn.meta_value AS first_name,
+						ln.meta_value AS last_name,
+						COALESCE(a.meta_value, '') AS address,
+						um.meta_value AS neighborhood_id
+					FROM
+						" . $wpdb->prefix . "users u
+					JOIN
+						" . $wpdb->prefix . "usermeta um
+						ON u.ID = um.user_id
+					JOIN
+						(
+							SELECT
+								user_id,
+								meta_value
+							FROM
+								" . $wpdb->prefix . "usermeta
+							WHERE
+								meta_key = 'first_name'
+						) fn
+						ON u.ID = fn.user_id
+					JOIN
+						(
+							SELECT
+								user_id,
+								meta_value
+							FROM
+								" . $wpdb->prefix . "usermeta
+							WHERE
+								meta_key = 'last_name'
+						) ln
+						ON u.ID = ln.user_id
+					LEFT OUTER JOIN
+						(
+							SELECT
+								user_id,
+								meta_value
+							FROM
+								" . $wpdb->prefix . "usermeta
+							WHERE
+								meta_key = 'address'
+						) a
+						ON u.ID = a.user_id
+					WHERE
+						um.meta_key = 'neighborhood_id'
+						AND um.meta_value != '0'
+						AND um.meta_value != ''
+						AND u.ID > " . $user_id . "
+					ORDER BY
+						ID ASC";
+				$results = $wpdb->get_results($sql);
+				foreach ($results as $result)
+				{
+					$return['users'][] = $result;
+				}
+
+				/* locations */
+				$sql = "
+					SELECT
+						id,
+						user_id AS wbb_user_id,
+						title,
+						miles
+					FROM
+						" . $wpdb->prefix . "wbb_locations
+					WHERE
+						id > " . $location_id . "
+					ORDER BY
+						id ASC";
+				$results = $wpdb->get_results($sql);
+				foreach ($results as $result)
+				{
+					$result->title = stripslashes( $result->title );
+					$return['locations'][] = $result;
+				}
+
+				/* entries */
+				$sql = "
+					SELECT
+						id,
+						user_id AS wbb_user_id,
+						location_id AS wbb_location_id,
+						entry_date,
+						mode_type,
+						miles
+					FROM
+						" . $wpdb->prefix . "wbb_entries
+					WHERE
+						id > " . $entry_id . "
+					ORDER BY
+						id ASC";
+				$results = $wpdb->get_results($sql);
+				foreach ($results as $result)
+				{
+					$return['entries'][] = $result;
+				}
+
+				echo json_encode( $return );
+			}
+
+			exit;
+		}
+
 		if ( isset( $_POST['wbb_action'] ) )
 		{
 			if ( isset($_POST['wbb_nonce']) && wp_verify_nonce( $_POST['wbb_nonce'], 'wbb_' . $_POST['wbb_action'] ) )
