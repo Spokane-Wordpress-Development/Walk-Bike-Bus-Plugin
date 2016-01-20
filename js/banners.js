@@ -6,11 +6,13 @@ jQuery(document).ready(function($)
 
     if (wbb.wp_user_id == 0)
     {
+        /*
         $('#header_main').append('' +
         '<div class="wbb-banner wbb-banner-horizontal">' +
         '<p><span>Enter your home address</span> to see if you\'re eligible for a free packet and gift!</p>' +
         '<input type="text">' +
         '</div>');
+        */
     }
 
     moveBanners();
