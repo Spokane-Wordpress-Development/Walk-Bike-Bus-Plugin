@@ -13,6 +13,11 @@ class Neighborhood {
 	const PERRY_SOUTH = 47.64271;
 	const PERRY_WEST = -117.39558;
 
+	const GARLAND_NORTH = 47.698680;
+	const GARLAND_EAST = -117.419965;
+	const GARLAND_SOUTH = 47.691329;
+	const GARLAND_WEST = -117.430437;
+
 	public $post_id = 0;
 	public $title = '';
 	public $north_boundary;
@@ -162,6 +167,7 @@ class Neighborhood {
 					if(strlen($west) == 0 || strlen($east) == 0 || strlen($north) == 0 || strlen($south) == 0)
 					{
 						$title = get_the_title();
+
 						$pos = strpos(strtoupper($title), 'PERRY');
 						if($pos !== FALSE)
 						{
@@ -169,6 +175,15 @@ class Neighborhood {
 							$east = self::PERRY_EAST;
 							$north = self::PERRY_NORTH;
 							$south = self::PERRY_SOUTH;
+						}
+
+						$pos = strpos(strtoupper($title), 'GARLAND');
+						if($pos !== FALSE)
+						{
+							$west = self::GARLAND_WEST;
+							$east = self::GARLAND_EAST;
+							$north = self::GARLAND_NORTH;
+							$south = self::GARLAND_SOUTH;
 						}
 					}
 
