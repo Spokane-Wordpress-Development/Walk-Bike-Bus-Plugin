@@ -46,11 +46,12 @@ $users = get_users(array(
 
 	<table class="wp-list-table widefat fixed striped users">
 		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Email</th>
-			<th>Neighborhood</th>
-		</tr>
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Neighborhood</th>
+				<th>Trips Logged</th>
+			</tr>
 		</thead>
 		<tbody>
 		<?php
@@ -61,6 +62,12 @@ $users = get_users(array(
 
 		?>
 		<?php foreach ($users as $user) { ?>
+			<?php
+
+			$u = new WalkBikeBus\User( $user->ID );
+			$u->get_entries();
+
+			?>
 			<tr>
 				<td>
 					<a href="/wp-admin/user-edit.php?user_id=<?php echo $user->ID; ?>">
@@ -72,6 +79,9 @@ $users = get_users(array(
 				</td>
 				<td>
 					<?php echo $neighborhoods[get_user_meta($user->ID, 'neighborhood_id', TRUE)]->title; ?>
+				</td>
+				<td>
+					<?php echo count( $u->entries ); ?>
 				</td>
 			</tr>
 		<?php } ?>

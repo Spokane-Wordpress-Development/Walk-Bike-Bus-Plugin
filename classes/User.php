@@ -13,6 +13,12 @@ class User {
 	public $locations = array();
 	public $entries = array();
 
+	public function __construct( $id = NULL )
+	{
+		$this->id = $id;
+		$this->load_user();
+	}
+
 	/**
 	 * @var \WalkBikeBus\Neighborhood
 	 */
@@ -37,19 +43,27 @@ class User {
 
 	public function load_user()
 	{
-		if ( is_user_logged_in() )
+		if ( $this->id > 0 )
+		{
+			$current_user = get_user_by( 'ID', $this->id );
+		}
+		elseif( function_exists( 'is_user_logged_in' ) && is_user_logged_in() )
 		{
 			$current_user = wp_get_current_user();
+		}
+
+		if ( isset( $current_user ) && $current_user )
+		{
 			$this->id = $current_user->ID;
 			$this->first_name = $current_user->user_firstname;
 			$this->last_name = $current_user->user_lastname;
 			$this->email = $current_user->user_email;
-			$this->address = get_user_meta ( $current_user->ID, 'address', TRUE );
-			$this->is_on_mailing_list = get_user_meta ( $current_user->ID, 'mailing_list', TRUE );
-			$this->is_on_mailing_list = ($this->is_on_mailing_list == 1) ? TRUE : FALSE;
+			$this->address = get_user_meta( $current_user->ID, 'address', TRUE );
+			$this->is_on_mailing_list = get_user_meta( $current_user->ID, 'mailing_list', TRUE );
+			$this->is_on_mailing_list = ( $this->is_on_mailing_list == 1 ) ? TRUE : FALSE;
 
-			$neighborhood_id = get_user_meta ( $current_user->ID, 'neighborhood_id', TRUE );
-			if ( !empty( $neighborhood_id ) && $neighborhood_id > 0 )
+			$neighborhood_id = get_user_meta( $current_user->ID, 'neighborhood_id', TRUE );
+			if ( ! empty( $neighborhood_id ) && $neighborhood_id > 0 )
 			{
 				$args = array(
 					'post_type' => 'wbb_neighborhood',
@@ -57,7 +71,7 @@ class User {
 				);
 				$query = new \WP_Query( $args );
 
-				while ( $query->have_posts() )
+				while( $query->have_posts() )
 				{
 					$query->the_post();
 					if ( get_the_ID() == $neighborhood_id )
